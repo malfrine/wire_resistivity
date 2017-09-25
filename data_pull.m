@@ -30,4 +30,4 @@ for i = 1:N
     s(i).loc = file_loc{i};
 end
 
-save raw_xlsx_data.mat
+save('raw_xlsx_data.mat','s');
