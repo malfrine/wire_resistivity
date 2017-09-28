@@ -25,9 +25,11 @@ t = sortByType(s,type_list);
 for i = 1:length(t)
     for j = 1:length(t(i).temp)
         if isnan(t(i).temp(j,:)) == zeros(1,length(t(i).temp(j,:)))
-            t(i).T_int(j) = spline(x,t(i).temp(j,:));
+            %t(i).T_int(j) = spline(x,t(i).temp(j,:));
+            t(i).T_int(j,:) = interp1(x,t(i).temp(j,:),xq,'cubic','extrap');
+            clc
         end
     end
 end
 
-
+save t.mat t
