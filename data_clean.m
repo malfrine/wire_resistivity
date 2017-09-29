@@ -38,8 +38,5 @@ for i = 1:length(t)
     end
 end
 
-<<<<<<< HEAD
 save('t.mat','t')
-=======
-save t.mat t
->>>>>>> 675ab194123474da2e9e1cb44549b98d3780b213
+

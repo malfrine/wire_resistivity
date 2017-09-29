@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 function sse_Ts = Ts_fn(Ts, id)
 R = id(:,1);
 w_a = id(:,2);
@@ -48,8 +47,5 @@ end
 
 function sse_all = par_fun(p_id)
 
-
-
->>>>>>> 675ab194123474da2e9e1cb44549b98d3780b213
 
 end
