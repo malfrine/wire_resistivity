@@ -1,7 +1,7 @@
 clear
 clc
 
-load raw_xlsx_data.mat
+load s.mat
 
 %x values of thermocouples
 x_loc = [0.54,0.635,0.635,0.54];
@@ -13,13 +13,19 @@ end
 xq = 0:del_l:x(end); %query points for cubic interpolation
 
 %get the different experimental types
+genFig1(s);
 [s,type_list] = getTypes(s);
 
 %get data for only relevant tags (resistance, temps, time_stamps)
 s = getRelData(s);
 
+%trime data starting and endpoints based on user input from getTrimTime()
+s = trimData(s);
+
 %arrange s so that all data from the same experimental types are appended
 t = sortByType(s,type_list);
+genFig2(t);
+
 
 %perform cubic interpolation of t.temp_int
 for i = 1:length(t)
@@ -32,4 +38,8 @@ for i = 1:length(t)
     end
 end
 
+<<<<<<< HEAD
+save('t.mat','t')
+=======
 save t.mat t
+>>>>>>> 675ab194123474da2e9e1cb44549b98d3780b213
