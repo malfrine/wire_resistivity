@@ -3,8 +3,7 @@ R = id(:,1);
 w_a = id(:,2);
 T = id(:,3:end);
 dR = (R - mean(R)) / std(R);
-dT = (T - (ones(size(T))*diag(mean(T)))) ./ ...
-    (ones(size(T))*diag(std(T)));
+dT = (T - mean(T(:))) / std(T(:));
 del_l = 1e-3;
 
 %get initial point
@@ -31,15 +30,15 @@ dR_pred_Ts = getdR_pred(T,dpar_opt,Ts,w_a);
 par_opt = size(dpar_opt);
 for i = 1:length(dpar_opt)
     if i == 1 || i == 4
-        par_opt(i) = dpar_opt(i) / std(T)^2;
+        par_opt(i) = dpar_opt(i) / std(T(:))^2;
     end
     if i == 2 || i == 5
-        par_opt(i) = -(2 * dpar_opt(i-1) * mean(T) / std(T)^2 ...
-            + dp_par_opt(i) / std(T));
+        par_opt(i) = -(2 * dpar_opt(i-1) * mean(T(:)) / std(T(:))^2 ...
+            + dp_par_opt(i) / std(T(:)));
     end
     if i == 3 || i == 6
-        par_opt(i) = dpar_opt(i-2) * mean(T)^2 / std(T)^2 ...
-            + dpar_opt(i-1) * mean(T) / std(T) ...
+        par_opt(i) = dpar_opt(i-2) * mean(T(:))^2 / std(T(:))^2 ...
+            + dpar_opt(i-1) * mean(T(:)) / std(T(:)) ...
             + dpar_opt(i);
     end 
 end
