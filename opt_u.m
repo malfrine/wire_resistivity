@@ -43,12 +43,22 @@ for i = len_u:-1:1
             
             [Ts_opt,fval] = fminbnd(@Ts_fn,T_lb,T_ub,options,id);
             
-            load dp_par.mat
-            u(i).s(j).param_mat(k,:) = dp_par';
-            u(i).s(j).Ts_mat(k) = Ts_opt;
+            load dpar_opt.mat
+            
+            sol.u(i).s(j).par(k,:) = par_opt';
+            sol.u(i).s(j).Ts(k) = Ts_opt;
+            
+            
+            %compare validation and identification data
+            R_val = val(:,1);
+            w_a_val = val(:,2);
+            T_val = val(:,3:end); 
+            R_pred_val = getR_pred(T_val,par_opt,Ts_opt,w_a_val);
+            sse_val = (R_val - R_pred_val)'*(R - R_pred_val);
+            sol.u(i).s(j).sse_val(k) = sse_val; 
         end
     end
 end
 
-save('u.mat','u')
+save('usol.mat','sol')
 

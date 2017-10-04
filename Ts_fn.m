@@ -21,12 +21,31 @@ opts = optimset(...
     'TolFun',1e-8,...
     'Display','iter-detailed');
 
-[dp_par,fval] = fminunc(@par_fun,dp_start,opts);
+[dpar_opt,fval] = fminunc(@par_fun,dp_start,opts);
 
 %calculate predicted resistance
-dR_pred_Ts = getdR_pred(T,dp_par,Ts,w_a);
+dR_pred_Ts = getdR_pred(T,dpar_opt,Ts,w_a);
 
-save dp_par.mat dp_par
+
+%denormalize parameters
+par_opt = size(dpar_opt);
+for i = 1:length(dpar_opt)
+    if i == 1 || i == 4
+        par_opt(i) = dpar_opt(i) / std(T)^2;
+    end
+    if i == 2 || i == 5
+        par_opt(i) = -(2 * dpar_opt(i-1) * mean(T) / std(T)^2 ...
+            + dp_par_opt(i) / std(T));
+    end
+    if i == 3 || i == 6
+        par_opt(i) = dpar_opt(i-2) * mean(T)^2 / std(T)^2 ...
+            + dpar_opt(i-1) * mean(T) / std(T) ...
+            + dpar_opt(i);
+    end 
+end
+
+save par_opt.mat par_opt
+
 sse_Ts = (dR - dR_pred_Ts)'*(dR - dR_pred_Ts);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,6 +1,7 @@
 function dR_pred = getdR_pred(T,dp,Ts,w_a)
 
-dT = (T - mean(T)) / std(T);
+dT = (T - (ones(size(T))*diag(mean(T)))) ./ ...
+    (ones(size(T))*diag(std(T)));
 del_l = 1e-3;
 
 dRho_pred = ...
