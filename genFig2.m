@@ -18,8 +18,11 @@ for k = length(u):-1:1
     end
     legend(labels)
     title(sprintf('%s',u(k).type))
-    figname = sprintf('~\fig2\%s.fig',u(k).type);
+    p = pwd;
+    cd([pwd '\fig2'])
+    figname = sprintf('%s.fig',u(k).type);
     saveas(gcf, figname)
+    cd(p);
 end
 
 end

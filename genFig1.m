@@ -11,11 +11,12 @@ for i = length(s):-1:1
    title(s(i).loc)
    ylim([0 1])
    
-   
+   p = pwd;
+   cd([pwd '\fig1'])
    figname = sprintf('s(%i)',i);
    saveas(gcf, figname) 
    close all
-    
+   cd(p)
 end
 
 end
