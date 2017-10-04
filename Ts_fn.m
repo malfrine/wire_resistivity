@@ -34,7 +34,7 @@ for i = 1:length(dpar_opt)
     end
     if i == 2 || i == 5
         par_opt(i) = -(2 * dpar_opt(i-1) * mean(T(:)) / std(T(:))^2 ...
-            + dp_par_opt(i) / std(T(:)));
+            + dpar_opt(i) / std(T(:)));
     end
     if i == 3 || i == 6
         par_opt(i) = dpar_opt(i-2) * mean(T(:))^2 / std(T(:))^2 ...

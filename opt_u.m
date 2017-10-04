@@ -43,7 +43,7 @@ for i = len_u:-1:1
             
             [Ts_opt,fval] = fminbnd(@Ts_fn,T_lb,T_ub,options,id);
             
-            load dpar_opt.mat
+            load par_opt.mat
             
             sol.u(i).s(j).par(k,:) = par_opt';
             sol.u(i).s(j).Ts(k) = Ts_opt;
@@ -54,7 +54,7 @@ for i = len_u:-1:1
             w_a_val = val(:,2);
             T_val = val(:,3:end); 
             R_pred_val = getR_pred(T_val,par_opt,Ts_opt,w_a_val);
-            sse_val = (R_val - R_pred_val)'*(R - R_pred_val);
+            sse_val = (R_val - R_pred_val)'*(R_val - R_pred_val);
             sol.u(i).s(j).sse_val(k) = sse_val; 
         end
     end
