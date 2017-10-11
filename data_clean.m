@@ -31,8 +31,5 @@ genFig1(s);
 %     end
 % end
 
-
-
-
 save('t.mat','t')
 save('u.mat','u')

@@ -17,7 +17,8 @@ t.mat
 u.mat
 *.icloud
 fig1/
-fig2
+fig2/
+fig3/
 s.mat
 *.asv
 backup data/
