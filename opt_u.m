@@ -7,7 +7,7 @@ load('u.mat')
 load('type_list.mat')
 load('graphRead.mat')
 
-n_sims = 5;
+n_sims = 1;
 len_u = length(u);
 si = 0;
 
@@ -47,12 +47,11 @@ for i = 1:len_u
             usol.u(i).s(j).par(k,:) = par_opt';
             usol.u(i).s(j).Ts(k) = Ts_opt;
             
-            
             %compare validation and identification data
             R_val = val(:,1);
             w_a_val = val(:,2);
             T_val = val(:,3:end); 
-            R_pred_val = getR_pred(T_val,par_opt,Ts_opt,w_a_val);
+            [R_pred_val,Rho_pred_val] = getR_pred(T_val,par_opt,Ts_opt,w_a_val);
             sse_val = (R_val - R_pred_val)'*(R_val - R_pred_val);
             usol.u(i).s(j).sse_val(k) = sse_val; 
             
@@ -60,15 +59,17 @@ for i = 1:len_u
             T_id = id(:,3:end);
             R_id = id(:,1);
             
+  
             T_val_av = mean(T_val,2);
             T_id_av = mean(T_id,2);
             
             simstr = sprintf(' - sim: %i',k);
             figtitle = [u(i).s(j).loc,simstr];
             Ts_txt = sprintf('Ts = %f degC',Ts_opt);
-            figname = sprintf('u(%i)s(%i)sim%i', i, j, k);
+            figname = sprintf('type(%i)run(%i)sim%i', i, j, k);
             
             close all
+            
             figure
             title(figtitle)
             plot(T_id_av, R_id,'ro',T_val_av,R_val,'gd');

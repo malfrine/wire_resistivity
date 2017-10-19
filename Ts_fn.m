@@ -4,10 +4,10 @@ w_a = id(:,2);
 T = id(:,3:end);
 dR = (R - mean(R)) / std(R);
 dT = (T - mean(T(:))) / std(T(:));
-del_l = 1e-3;
+dTs = (Ts - mean(T(:))) / std(T(:));
 
 %get initial point
-dR_start = [sum(dT.^2,2) sum(dT,2) size(dT,2)*ones(size(dT,1),1)] * 1e-3 ./ w_a ;
+dR_start = [sum(dT.^3,2) sum(dT.^2,2) sum(dT,2) size(dT,2)*ones(size(dT,1),1)] * 1e-3 ./ w_a ;
 dp_start = [pinv(dR_start)*dR; 0.9*pinv(dR_start)*dR];
 
 %quadratic parameters optimization
@@ -17,10 +17,26 @@ opts = optimset(...
     'MaxFunEvals',1e5,...
     'MaxIter',1e5,...
     'TolX',1e-12,...
-    'TolFun',1e-8,...
+    'TolFun',2.5,...
     'Display','iter-detailed');
 
-[dpar_opt,fval] = fminunc(@par_fun,dp_start,opts);
+%constraint equationts to ensure smoothness
+Aeq = [dTs^3,dTs^2,dTs,1,-dTs^3,-dTs^2,-dTs,-1;...
+    3*dTs^2,2*dTs,1,0,-3*dTs^2,-2*dTs,-1,0];
+beq = [0;0];
+
+
+[dpar_opt,fval] = fmincon(...
+    @par_fun,...
+    dp_start,...
+    [],...
+    [],...
+    Aeq,...
+    beq,...
+    [],...
+    [],...
+    [],...
+    opts);
 
 %calculate predicted resistance
 dR_pred_Ts = getdR_pred(T,dpar_opt,Ts,w_a);
@@ -29,18 +45,25 @@ dR_pred_Ts = getdR_pred(T,dpar_opt,Ts,w_a);
 %denormalize parameters
 par_opt = size(dpar_opt);
 for i = 1:length(dpar_opt)
-    if i == 1 || i == 4
-        par_opt(i) = dpar_opt(i) / std(T(:))^2;
+    if i == 1 || i == 5
+        par_opt(i) = dpar_opt(i) / std(T(:))^3;
     end
-    if i == 2 || i == 5
-        par_opt(i) = -(2 * dpar_opt(i-1) * mean(T(:)) / std(T(:))^2 ...
-            + dpar_opt(i) / std(T(:)));
+    if i == 2 || i == 6
+        par_opt(i) = (-3 * dpar_opt(i-1) * mean(T(:)) / std(T(:))^3 ...
+            + dpar_opt(i) / std(T(:))^2);
     end
-    if i == 3 || i == 6
-        par_opt(i) = dpar_opt(i-2) * mean(T(:))^2 / std(T(:))^2 ...
-            + dpar_opt(i-1) * mean(T(:)) / std(T(:)) ...
+    if i == 3 || i == 7
+        par_opt(i) = 3 * dpar_opt(i-2) * mean(T(:))^2 / std(T(:))^3 ...
+            - 2 * dpar_opt(i-1) * mean(T(:)) / std(T(:)) ^ 2 ...
+            + dpar_opt(i) / std(T(:));
+    end
+    
+    if i == 4 || i == 8
+        par_opt(i) = - dpar_opt(i-3) * mean(T(:))^3 / std(T(:))^3 ...
+            + dpar_opt(i-2) * mean(T(:)) ^ 2 / std(T(:)) ^ 2 ...
+            + dpar_opt(i-1) / std(T(:)) ...
             + dpar_opt(i);
-    end 
+    end
 end
 
 save par_opt.mat par_opt
@@ -51,9 +74,6 @@ sse_Ts = (dR - dR_pred_Ts)'*(dR - dR_pred_Ts);
     function sse_par = par_fun(dp_par)
         dR_pred_par = getdR_pred(T,dp_par,Ts,w_a);
         sse_par = (dR-dR_pred_par)'*(dR-dR_pred_par);
-        if isnan(sse_par)
-            stop = 1;
-        end
     end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end

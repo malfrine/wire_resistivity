@@ -21,12 +21,16 @@ for i = length(usol.u):-1:1
         std_a2(row,1) = par_std(2);
         a3(row,1) = par_av(3);
         std_a3(row,1) = par_std(3);
-        b1(row,1) = par_av(4);
-        std_b1(row,1) = par_std(4);
-        b2(row,1) = par_av(5);
-        std_b2(row,1) = par_std(5);
-        b3(row,1) = par_av(6);
-        std_b3(row,1) = par_std(6);
+                a4(row,1) = par_av(4);
+        std_a4(row,1) = par_std(4);
+        b1(row,1) = par_av(5);
+        std_b1(row,1) = par_std(5);
+        b2(row,1) = par_av(6);
+        std_b2(row,1) = par_std(6);
+        b3(row,1) = par_av(7);
+        std_b3(row,1) = par_std(7);
+                b4(row,1) = par_av(8);
+        std_b4(row,1) = par_std(8);
         Ts(row,1) = mean(sol.Ts);
         std_Ts(row,1) = std(sol.Ts) / Ts(row,1);
         sse(row,1) = mean(sol.sse_val);
@@ -40,8 +44,9 @@ for i = length(usol.u):-1:1
     end
 end
 
-usol_Table = table(a1,std_a1,a2,std_a2,a3,std_a3,b1,std_b1,b2,std_b2,...
-    b3,std_b3,Ts,std_Ts,sse,std_sse,type,run,data_file_location);
+usol_Table = table(a1,std_a1,a2,std_a2,a3,std_a3,a4,std_a4,b1,std_b1,b2,...
+    std_b2,b3,std_b3,b4,std_b4,Ts,std_Ts,sse,std_sse,type,run,...
+    data_file_location);
 
 filename = 'usol.xlsx';
 writetable(usol_Table,filename)
