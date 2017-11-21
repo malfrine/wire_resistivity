@@ -6,9 +6,9 @@ load s.mat
 load graphRead.mat
 
 s = getRelData(s);
-check_sets = [23,24,51,11,52,39,35,40,33,30,34,28,26,21,20,11];
+%check_sets = [23,24,51,11,52,39,35,40,33,30,34,28,26,21,20,11];
 
-for i = 23%1:length(s)%check_sets
+for i = 1:length(s)%check_sets
     
     temp_av = mean(s(i).temp,2);
     temp_ar = s(i).temp;

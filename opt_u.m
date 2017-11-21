@@ -7,7 +7,7 @@ load('u.mat')
 load('type_list.mat')
 load('graphRead.mat')
 
-n_sims = 1;
+n_sims = 10;
 len_u = length(u);
 si = 0;
 
